@@ -1,6 +1,5 @@
 // Logic to use the correct environment's keys.
 if (process.env.NODE_ENV === 'production') {
-    console.log("Correct Keys");
     // We are in the production environment, return the production keys.
     module.exports = require('./prod');
 } else {
