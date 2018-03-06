@@ -7,6 +7,7 @@ const User = mongoose.model('users');
 
 // Serialize the user information to a database entry.
 passport.serializeUser((user, done) => {
+    console.log("serializing");
     done(null, user.id);
 });
 
@@ -28,6 +29,7 @@ passport.use(
             proxy: true,
         },
         async (accessToken, refreshToken, profile, done) => {
+            console.log("Reached Auth");
             // Receive all token and profile info from Google Auth
             const existingUser = await User.findOne({ googleId: profile.id });
             if (existingUser) {
