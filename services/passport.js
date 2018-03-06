@@ -20,29 +20,23 @@ passport.deserializeUser((id, done) => {
 
 // Set up passport for Google Authentication
 passport.use(
-    new GoogleStrategy({
-        clientID: keys.googleClientID,
-        clientSecret: keys.googleClientSecret,
-        callbackURL: '/auth/google/callback',
-        proxy: true,
-    },
-    (accessToken, refreshToken, profile, done) => {
-        // Receive all token and profile info from Google Auth
-        User.findOne({
-            googleId: profile.id
-        })
-            .then((existingUser) => {
-                if (existingUser) {
-                    // We already have a record with the given profile ID
-                    done(null, existingUser);
-                } else {
-                    // We don't have a user record with this ID, create a new user
-                    new User({
-                        googleId: profile.id
-                    })
-                        .save()
-                        .then((newUser) => done(null, newUser));
-                }
-            })
-    })
+    new GoogleStrategy(
+        {
+            clientID: keys.googleClientID,
+            clientSecret: keys.googleClientSecret,
+            callbackURL: '/auth/google/callback',
+            proxy: true,
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            // Receive all token and profile info from Google Auth
+            const existingUser = await User.findOne({ googleId: profile.id });
+            if (existingUser) {
+                // We already have a record with the given profile ID
+                return done(null, existingUser);
+            }
+            // We don't have a user record with this ID, create a new user
+            const user = await new User({ googleId: profile.id }).save();
+            done(null, user);
+        }
+    )
 );
