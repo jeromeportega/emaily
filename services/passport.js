@@ -29,9 +29,10 @@ passport.use(
             proxy: true,
         },
         async (accessToken, refreshToken, profile, done) => {
-            console.log("Reached Auth");
+            console.log("Reached Auth", profile.id);
             // Receive all token and profile info from Google Auth
             const existingUser = await User.findOne({ googleId: profile.id });
+            console.log ("Looked for user");
             if (existingUser) {
                 console.log("Found existing user");
                 // We already have a record with the given profile ID
